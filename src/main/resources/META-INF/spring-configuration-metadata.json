@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
+      "name": "customize.common.quartz",
+      "type": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "customize.common.quartz.enableController",
+      "type": "java.lang.Boolean",
+      "description": "Enable QuartzController",
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "customize.common.quartz.baseUrl",
+      "type": "java.lang.String",
+      "description": "QuartzController BaseUrl",
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
+      "defaultValue": "/task"
+    },
+    {
+      "name": "customize.common.quartz.cacheQuartzManagerException",
+      "type": "java.lang.Boolean",
+      "description": "cacheQuartzManagerException",
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "customize.common.quartz.scanExecJobPackages",
+      "type": "java.lang.String",
+      "description": "scanExecJobPackages",
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties"
+    }
+  ]
+}
