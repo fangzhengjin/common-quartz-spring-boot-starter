@@ -6,7 +6,6 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-apply plugin: 'kotlin-jpa'
 apply plugin: 'io.spring.dependency-management'
 apply from: "binary.gradle"
 
