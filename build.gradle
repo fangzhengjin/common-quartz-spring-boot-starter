@@ -10,7 +10,7 @@ apply plugin: 'io.spring.dependency-management'
 apply from: "binary.gradle"
 
 group "com.github.fangzhengjin"
-version "0.0.1"
+version VERSION_NAME
 sourceCompatibility = '1.8'
 
 jar.enabled = true

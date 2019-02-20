@@ -9,6 +9,7 @@ import org.quartz.core.jmx.JobDataMapSupport
 import org.quartz.impl.matchers.GroupMatcher
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
 import org.springframework.util.StringUtils
 import java.util.*
