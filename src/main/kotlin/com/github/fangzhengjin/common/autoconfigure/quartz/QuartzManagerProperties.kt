@@ -31,7 +31,7 @@ class QuartzManagerProperties {
     var baseUrl: String = "/task"
     var scanExecJobPackages: String = ""
         get() {
-            if (!StringUtils.isEmpty(field)) {
+            if (StringUtils.isEmpty(field)) {
                 field = basePackage
             }
             return field
