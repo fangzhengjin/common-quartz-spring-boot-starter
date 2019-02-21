@@ -1,4 +1,16 @@
-# common-quartz
+# common-quartz-spring-boot-starter
+
+[ ![Download](https://api.bintray.com/packages/fangzhengjin/maven/common-quartz-spring-boot-starter/images/download.svg) ](https://bintray.com/fangzhengjin/maven/common-quartz-spring-boot-starter/_latestVersion)
+
+```groovy
+repositories {
+    maven { url "https://dl.bintray.com/fangzhengjin/maven/" }
+}
+
+dependencies {
+    implementation "com.github.fangzhengjin:common-quartz-spring-boot-starter:version"
+}
+```
 
 使用前需配置quartz
 配置样例
