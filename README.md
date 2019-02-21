@@ -74,3 +74,9 @@ customize:
       #是否使用内置异常处理器处理QuartzManagerException异常
       cacheQuartzManagerException: true
 ```
+因组件使用reflections进行包扫描，启动过程中会出现大量reflections警告，如需屏蔽警告请添加以下配置项
+```yaml
+logging:
+  level:
+    org.reflections: error
+```
