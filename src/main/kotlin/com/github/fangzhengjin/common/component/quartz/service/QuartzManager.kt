@@ -22,10 +22,14 @@ object QuartzManager {
      */
     @JvmStatic
     private val logger = LoggerFactory.getLogger(this::class.java)
+    @JvmStatic
     private lateinit var schedulerFactory: SchedulerFactoryBean
+    @JvmStatic
     private lateinit var quartzManagerProperties: QuartzManagerProperties
+    @JvmStatic
     private lateinit var scheduler: Scheduler
 
+    @JvmStatic
     fun init(schedulerFactory: SchedulerFactoryBean, quartzManagerProperties: QuartzManagerProperties): QuartzManager {
         this.schedulerFactory = schedulerFactory
         this.quartzManagerProperties = quartzManagerProperties
@@ -33,11 +37,17 @@ object QuartzManager {
         return this
     }
 
+    @JvmStatic
     fun getSchedulerFactory(): SchedulerFactoryBean = schedulerFactory
+
+    @JvmStatic
     fun getQuartzManagerProperties(): QuartzManagerProperties = quartzManagerProperties
+
+    @JvmStatic
     fun getScheduler(): Scheduler = scheduler
 
 
+    @JvmStatic
     @JvmOverloads
     fun checkExists(triggerKey: TriggerKey, mustBeExists: Boolean = true, throwException: Boolean = true): Boolean {
         val exists = scheduler.checkExists(triggerKey)
@@ -46,6 +56,7 @@ object QuartzManager {
         return exists
     }
 
+    @JvmStatic
     @JvmOverloads
     fun checkExists(jobKey: JobKey, mustBeExists: Boolean = true, throwException: Boolean = true): Boolean {
         val exists = scheduler.checkExists(jobKey)
@@ -57,6 +68,7 @@ object QuartzManager {
     /**
      * 扫描可使用的任务执行器
      */
+    @JvmStatic
     fun jobExecList(): HashMap<String, String> {
         try {
             val jobDesc = hashMapOf<String, String>()
@@ -78,6 +90,7 @@ object QuartzManager {
         }
     }
 
+    @JvmStatic
     fun jobList(): ArrayList<QuartzJobInfo> {
         var cacheJobKey: JobKey? = null
         try {
@@ -114,6 +127,7 @@ object QuartzManager {
      * @Description: 添加一个定时任务
      * @param quartzJobInfo 任务信息
      */
+    @JvmStatic
     fun addJob(quartzJobInfo: QuartzJobInfo) {
         try {
             Class.forName(quartzJobInfo.jobClassName)
@@ -149,6 +163,7 @@ object QuartzManager {
     /**
      * 为任务添加触发器
      */
+    @JvmStatic
     fun addTrigger(quartzJobInfo: QuartzJobInfo) {
         try {
             checkExists(quartzJobInfo.jobKey, true)
@@ -172,6 +187,7 @@ object QuartzManager {
     /**
      * @Description: 修改触发器
      */
+    @JvmStatic
     fun modifyTrigger(quartzTrigger: QuartzJobInfo.QuartzTrigger) {
         try {
             checkExists(quartzTrigger.key, true)
@@ -205,6 +221,7 @@ object QuartzManager {
     /**
      * @Description: 移除一个触发器
      */
+    @JvmStatic
     fun remove(triggerKey: TriggerKey) {
         try {
             checkExists(triggerKey)
@@ -220,6 +237,7 @@ object QuartzManager {
     /**
      * @Description: 移除一个任务
      */
+    @JvmStatic
     fun remove(jobKey: JobKey) {
         try {
             checkExists(jobKey)
@@ -242,6 +260,7 @@ object QuartzManager {
      * @Description:暂停一个触发器
      * @param triggerKey
      */
+    @JvmStatic
     fun pause(triggerKey: TriggerKey) {
         try {
             checkExists(triggerKey)
@@ -257,6 +276,7 @@ object QuartzManager {
      * @Description:恢复一个暂停的触发器
      * @param triggerKey
      */
+    @JvmStatic
     fun resume(triggerKey: TriggerKey) {
         try {
             checkExists(triggerKey)
@@ -272,6 +292,7 @@ object QuartzManager {
      * @Description:暂停一个任务
      * @param jobKey
      */
+    @JvmStatic
     fun pause(jobKey: JobKey) {
         try {
             checkExists(jobKey)
@@ -287,6 +308,7 @@ object QuartzManager {
      * @Description:恢复一个暂停的任务
      * @param jobKey
      */
+    @JvmStatic
     fun resume(jobKey: JobKey) {
         try {
             checkExists(jobKey)
@@ -301,6 +323,7 @@ object QuartzManager {
     /**
      * 暂停所有任务
      */
+    @JvmStatic
     fun pauseAll() {
         try {
             scheduler.pauseAll()
@@ -313,6 +336,7 @@ object QuartzManager {
     /**
      * 恢复所有暂停任务
      */
+    @JvmStatic
     fun resumeAll() {
         try {
             scheduler.resumeAll()
@@ -325,6 +349,7 @@ object QuartzManager {
     /**
      * @Description:启动所有定时任务
      */
+    @JvmStatic
     fun start() {
         try {
             if (!scheduler.isStarted) {
@@ -341,6 +366,7 @@ object QuartzManager {
     /**
      * @Description:关闭所有定时任务
      */
+    @JvmStatic
     fun shutdown() {
         try {
             if (!scheduler.isShutdown) {
