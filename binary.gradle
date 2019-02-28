@@ -105,7 +105,7 @@ bintray {
             //版本描述
             desc = POM_DESCRIPTION
             mavenCentralSync {
-                sync = MAVEN_SYNC
+                sync = true
                 user = MAVEN_USER
                 password = MAVEN_PWD
             }
