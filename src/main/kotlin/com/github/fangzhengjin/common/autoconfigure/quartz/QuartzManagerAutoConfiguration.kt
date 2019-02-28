@@ -41,6 +41,6 @@ class QuartzManagerAutoConfiguration {
                     "com.github.fangzhengjin"
                 }
         }
-        return QuartzManager(schedulerFactory, quartzManagerProperties)
+        return QuartzManager.init(schedulerFactory, quartzManagerProperties)
     }
 }

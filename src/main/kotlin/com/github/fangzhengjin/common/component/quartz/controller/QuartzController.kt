@@ -16,14 +16,12 @@ import java.util.*
 @ConditionalOnProperty(value = ["customize.common.quartz.enableController"], matchIfMissing = true)
 @RestController
 @RequestMapping("\${customize.common.quartz.baseUrl:/task}")
-class QuartzController(
-    private val quartzManager: QuartzManager
-) {
+class QuartzController {
 //    @ApiAuthSkip
 //    @ApiOperation("启动调度")
 //    @PostMapping("/start")
 //    fun start(): Result<String> {
-//        quartzManager.start()
+//        QuartzManager.start()
 //        return Result.ok("操作成功")
 //    }
 //
@@ -34,96 +32,96 @@ class QuartzController(
 //    @ApiOperation("停止调度")
 //    @PostMapping("/shutdown")
 //    fun shutdown(): Result<String> {
-//        quartzManager.shutdown()
+//        QuartzManager.shutdown()
 //        return Result.ok("操作成功")
 //    }
 
     @ApiOperation("任务列表")
     @GetMapping("/list")
     fun taskList(): Result<ArrayList<QuartzJobInfo>> {
-        return Result.ok(quartzManager.jobList())
+        return Result.ok(QuartzManager.jobList())
     }
 
     @ApiOperation("任务执行器列表")
     @GetMapping("/jobExec/list")
     fun jobExecList(): Result<HashMap<String, String>> {
-        return Result.ok(quartzManager.jobExecList())
+        return Result.ok(QuartzManager.jobExecList())
     }
 
     @ApiOperation("添加任务")
     @PostMapping("/add")
     fun add(@RequestBody quartzJobInfo: QuartzJobInfo): Result<String> {
-        quartzManager.addJob(quartzJobInfo)
+        QuartzManager.addJob(quartzJobInfo)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("删除任务")
     @PostMapping("/delete")
     fun removeTask(@RequestBody jobKey: JobKey): Result<String> {
-        quartzManager.remove(jobKey)
+        QuartzManager.remove(jobKey)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("暂停任务")
     @PostMapping("/pause")
     fun pauseTask(@RequestBody jobKey: JobKey): Result<String> {
-        quartzManager.pause(jobKey)
+        QuartzManager.pause(jobKey)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("暂停所有任务")
     @PostMapping("/all/pause")
     fun pauseAllTask(): Result<String> {
-        quartzManager.pauseAll()
+        QuartzManager.pauseAll()
         return Result.ok("操作成功")
     }
 
     @ApiOperation("恢复任务")
     @PostMapping("/resume")
     fun resumeTask(@RequestBody jobKey: JobKey): Result<String> {
-        quartzManager.resume(jobKey)
+        QuartzManager.resume(jobKey)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("恢复所有任务")
     @PostMapping("/all/resume")
     fun resumeAllTask(): Result<String> {
-        quartzManager.resumeAll()
+        QuartzManager.resumeAll()
         return Result.ok("操作成功")
     }
 
     @ApiOperation("新增触发器")
     @PostMapping("/trigger/add")
     fun addTrigger(@RequestBody quartzJobInfo: QuartzJobInfo): Result<String> {
-        quartzManager.addTrigger(quartzJobInfo)
+        QuartzManager.addTrigger(quartzJobInfo)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("删除触发器")
     @PostMapping("/trigger/delete")
     fun removeTrigger(@RequestBody triggerKey: TriggerKey): Result<String> {
-        quartzManager.remove(triggerKey)
+        QuartzManager.remove(triggerKey)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("修改触发器")
     @PostMapping("/trigger/modify")
     fun modifyTrigger(@RequestBody quartzTrigger: QuartzJobInfo.QuartzTrigger): Result<String> {
-        quartzManager.modifyTrigger(quartzTrigger)
+        QuartzManager.modifyTrigger(quartzTrigger)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("暂停触发器")
     @PostMapping("/trigger/pause")
     fun pauseTrigger(@RequestBody triggerKey: TriggerKey): Result<String> {
-        quartzManager.pause(triggerKey)
+        QuartzManager.pause(triggerKey)
         return Result.ok("操作成功")
     }
 
     @ApiOperation("恢复触发器")
     @PostMapping("/trigger/resume")
     fun resumeTask(@RequestBody triggerKey: TriggerKey): Result<String> {
-        quartzManager.resume(triggerKey)
+        QuartzManager.resume(triggerKey)
         return Result.ok("操作成功")
     }
 }
