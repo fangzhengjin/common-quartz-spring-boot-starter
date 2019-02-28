@@ -25,6 +25,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -38,25 +39,33 @@ publishing {
             artifact javadocJar
 
             //pom相关信息
-            pom.withXml {
-                Node root = asNode()
-                root.appendNode('name', ARTIFACT_ID)
-                root.appendNode('description', POM_DESCRIPTION)
-                root.appendNode('url', POM_URL)
-
-                def issues = root.appendNode('issueManagement')
-                issues.appendNode('system', 'github')
-                issues.appendNode('url', ISSUE_URL)
-
-                def scm = root.appendNode('scm')
-                scm.appendNode('url', POM_SCM_URL)
-                scm.appendNode('connection', POM_SCM_CONNECTION)
-                scm.appendNode('developerConnection', POM_SCM_DEV_CONNECTION)
-
-                def license = root.appendNode('licenses').appendNode('license')
-                license.appendNode('name', POM_LICENCE_NAME)
-                license.appendNode('url', POM_LICENCE_URL)
-                license.appendNode('distribution', POM_LICENCE_DIST)
+            pom {
+                name = ARTIFACT_ID
+                description = POM_DESCRIPTION
+                url = POM_URL
+                scm {
+                    url = POM_SCM_URL
+                    connection = POM_SCM_CONNECTION
+                    developerConnection = POM_SCM_DEV_CONNECTION
+                }
+                issueManagement {
+                    system = 'github'
+                    url = ISSUE_URL
+                }
+                developers {
+                    developer {
+                        id = POM_DEVELOPER_ID
+                        name = POM_DEVELOPER_NAME
+                        email = POM_DEVELOPER_EMAIL
+                    }
+                }
+                license {
+                    licenses {
+                        name = POM_LICENCE_NAME
+                        url = POM_LICENCE_URL
+                        distribution = POM_LICENCE_DIST
+                    }
+                }
             }
         }
     }
@@ -86,12 +95,20 @@ bintray {
         licenses = [POM_LICENCE_NAME]
 //        labels = ['gradle', 'core']
         publicDownloadNumbers = true
-
+        //Github仓库相对地址
+        githubRepo = GITHUB_REPO
+        //版本历程文件
+        githubReleaseNotesFile = 'README.md' //Optional Github readme file
         version {
             //版本号
             name = VERSION_NAME
             //版本描述
             desc = POM_DESCRIPTION
+            mavenCentralSync {
+                sync = MAVEN_SYNC
+                user = MAVEN_USER
+                password = MAVEN_PWD
+            }
         }
     }
 }
