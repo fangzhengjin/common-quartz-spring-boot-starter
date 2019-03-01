@@ -20,6 +20,7 @@ group "com.github.fangzhengjin"
 version VERSION_NAME
 sourceCompatibility = '1.8'
 
+bootJar.enabled = false
 jar.enabled = true
 
 repositories {
