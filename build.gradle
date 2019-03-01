@@ -4,10 +4,17 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.3.21'
     id "com.jfrog.bintray" version "1.8.4"
+    id 'com.gradle.build-scan' version "2.2"
+}
+
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
 }
 
 apply plugin: 'io.spring.dependency-management'
 apply from: "binary.gradle"
+apply from: "jacoco.gradle"
 
 group "com.github.fangzhengjin"
 version VERSION_NAME
@@ -18,7 +25,6 @@ jar.enabled = true
 repositories {
     mavenLocal()
     maven { url "https://maven.aliyun.com/repository/public/" }
-    maven { url "https://dl.bintray.com/fangzhengjin/maven/" }
     mavenCentral()
 }
 
