@@ -31,17 +31,19 @@ repositories {
 
 dependencies {
     compileOnly "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-quartz"
-    implementation "org.reflections:reflections:${reflectionsVersion}"
-    implementation "com.github.fangzhengjin:common-core:0.0.1"
+    testCompileOnly "org.springframework.boot:spring-boot-starter-web"
+    api "org.springframework.boot:spring-boot-starter-quartz"
+    api "org.reflections:reflections:${reflectionsVersion}"
+    api "com.github.fangzhengjin:common-core:0.0.3"
     //fastjson
-    compileOnly "com.alibaba:fastjson:${fastJsonVersion}"
+//    implementation "com.alibaba:fastjson:${fastJsonVersion}"
     //Swagger2
     compileOnly "io.springfox:springfox-swagger2:${swaggerVersion}"
     compileOnly "io.springfox:springfox-swagger-ui:${swaggerVersion}"
     compileOnly "io.springfox:springfox-bean-validators:${swaggerVersion}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    api "org.jetbrains.kotlin:kotlin-reflect"
+    testRuntimeOnly "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
