@@ -4,6 +4,7 @@ import com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperti
 import com.github.fangzhengjin.common.component.quartz.annotation.QuartzJobDescription
 import com.github.fangzhengjin.common.component.quartz.exception.QuartzManagerException
 import com.github.fangzhengjin.common.component.quartz.vo.QuartzJobInfo
+import com.github.fangzhengjin.common.component.quartz.vo.QuartzTrigger
 import org.quartz.*
 import org.quartz.core.jmx.JobDataMapSupport
 import org.quartz.impl.matchers.GroupMatcher
@@ -91,6 +92,33 @@ object QuartzManager {
     }
 
     /**
+     * 任务详情
+     */
+    @JvmStatic
+    fun getJobInfo(jobName: String, jobGroupName: String): QuartzJobInfo {
+        val jobKey = JobKey.jobKey(jobName, jobGroupName)
+        return getJobInfo(jobKey)
+    }
+
+    /**
+     * 任务详情
+     */
+    @JvmStatic
+    fun getJobInfo(jobKey: JobKey): QuartzJobInfo {
+        val jobDetail = scheduler.getJobDetail(jobKey)
+        return QuartzJobInfo(
+            jobName = jobKey.name,
+            jobGroupName = jobKey.group,
+            jobClassName = jobDetail.jobClass.name,
+            jobDescription = jobDetail.description,
+            jobDataMap = jobDetail.jobDataMap
+            //                        triggers = QuartzJobInfo.QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
+        ).also {
+            it.triggers = QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
+        }
+    }
+
+    /**
      * 任务列表
      */
     @JvmStatic
@@ -102,19 +130,7 @@ object QuartzManager {
                 // 根据任务组名称查询所有任务
                 for (jobKey in scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroupName))) {
                     cacheJobKey = jobKey
-                    val jobName = jobKey.name
-                    val jobDetail = scheduler.getJobDetail(jobKey)
-                    list.add(
-                        QuartzJobInfo(
-                            jobName = jobName,
-                            jobGroupName = jobGroupName,
-                            jobClassName = jobDetail.jobClass.name,
-                            jobDescription = jobDetail.description,
-                            jobDataMap = jobDetail.jobDataMap
-                            //                        triggers = QuartzJobInfo.QuartzTrigger.generator(jobKey, scheduler)
-                        ).also {
-                            it.triggers = QuartzJobInfo.QuartzTrigger.generator(jobKey, scheduler)
-                        })
+                    list.add(getJobInfo(jobKey))
                 }
             }
             return list
@@ -171,14 +187,20 @@ object QuartzManager {
         try {
             checkExists(quartzJobInfo.jobKey, true)
             val existsList =
-                quartzJobInfo.triggers.filter { checkExists(it.key, false, false) }.map { it.key.toString() }
+                quartzJobInfo.triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
+                    .map { it.key.toString() }
                     .toMutableList()
             if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
             val jobDetail = scheduler.getJobDetail(quartzJobInfo.jobKey)
             val oldTriggers = scheduler.getTriggersOfJob(quartzJobInfo.jobKey).toMutableList()
             if (oldTriggers.isNotEmpty()) {
-                quartzJobInfo.triggers.addAll(QuartzJobInfo.QuartzTrigger.generator(oldTriggers))
+                quartzJobInfo.triggers.addAll(
+                    QuartzTrigger.transformToQuartzTriggerAndFlushStatus(
+                        oldTriggers
+                    )
+                )
             }
+            // 添加并替换历史触发器
             scheduler.scheduleJob(jobDetail, quartzJobInfo.getCronTriggers().toMutableSet(), true)
         } catch (e: Exception) {
             logger.error(e.message, e)
@@ -188,10 +210,46 @@ object QuartzManager {
     }
 
     /**
+     * 为任务添加触发器
+     */
+    @JvmStatic
+    fun addTrigger(jobKey: JobKey, vararg triggers: Trigger) {
+        try {
+            checkExists(jobKey, true)
+            val existsList =
+                triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
+                    .map { it.key.toString() }
+                    .toMutableList()
+            if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
+            val jobDetail = scheduler.getJobDetail(jobKey)
+            val oldTriggers = scheduler.getTriggersOfJob(jobKey).toMutableList()
+            val newTriggers = mutableListOf<QuartzTrigger>()
+            if (oldTriggers.isNotEmpty()) {
+                newTriggers.addAll(QuartzTrigger.transformToQuartzTriggerAndFlushStatus(oldTriggers))
+            }
+            newTriggers.addAll(QuartzTrigger.transformToQuartzTriggerAndFlushStatus(triggers.toMutableList()))
+            // 添加并替换历史触发器
+            scheduler.scheduleJob(jobDetail, newTriggers.map { it.trigger as CronTrigger }.toMutableSet(), true)
+        } catch (e: Exception) {
+            logger.error(e.message, e)
+            if (e is QuartzManagerException) throw e
+            throw QuartzManagerException("添加触发器失败")
+        }
+    }
+
+    /**
+     * 为任务添加触发器
+     */
+    @JvmStatic
+    fun addTrigger(jobKey: JobKey, vararg quartzTriggers: QuartzTrigger) {
+        addTrigger(jobKey, *quartzTriggers.map { it.trigger }.toTypedArray())
+    }
+
+    /**
      * @Description: 修改触发器
      */
     @JvmStatic
-    fun modifyTrigger(quartzTrigger: QuartzJobInfo.QuartzTrigger) {
+    fun modifyTrigger(quartzTrigger: QuartzTrigger) {
         try {
             checkExists(quartzTrigger.key, true)
             var trigger: CronTrigger = scheduler.getTrigger(quartzTrigger.key) as CronTrigger
@@ -346,6 +404,22 @@ object QuartzManager {
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw QuartzManagerException("恢复所有暂停任务失败")
+        }
+    }
+
+    /**
+     * 危险操作，只提供QuartzManager调用
+     * 删除所有任务
+     */
+    @JvmStatic
+    fun removeAll() {
+        try {
+            jobList().forEach {
+                remove(it.jobKey)
+            }
+        } catch (e: Exception) {
+            logger.error(e.message, e)
+            throw QuartzManagerException("删除所有任务失败")
         }
     }
 

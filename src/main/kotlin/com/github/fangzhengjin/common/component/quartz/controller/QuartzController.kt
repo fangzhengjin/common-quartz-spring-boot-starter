@@ -2,6 +2,7 @@ package com.github.fangzhengjin.common.component.quartz.controller
 
 import com.github.fangzhengjin.common.component.quartz.service.QuartzManager
 import com.github.fangzhengjin.common.component.quartz.vo.QuartzJobInfo
+import com.github.fangzhengjin.common.component.quartz.vo.QuartzTrigger
 import com.github.fangzhengjin.common.core.entity.Result
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -17,25 +18,6 @@ import java.util.*
 @RestController
 @RequestMapping("\${customize.common.quartz.baseUrl:/task}")
 class QuartzController {
-//    @ApiAuthSkip
-//    @ApiOperation("启动调度")
-//    @PostMapping("/start")
-//    fun start(): Result<String> {
-//        QuartzManager.start()
-//        return Result.ok("操作成功")
-//    }
-//
-//    /**
-//     * 危险操作，停止后同一实例无法再次启动
-//     */
-//    @ApiAuthSkip
-//    @ApiOperation("停止调度")
-//    @PostMapping("/shutdown")
-//    fun shutdown(): Result<String> {
-//        QuartzManager.shutdown()
-//        return Result.ok("操作成功")
-//    }
-
     @ApiOperation("任务列表")
     @GetMapping("/list")
     fun taskList(): Result<ArrayList<QuartzJobInfo>> {
@@ -106,7 +88,7 @@ class QuartzController {
 
     @ApiOperation("修改触发器")
     @PostMapping("/trigger/modify")
-    fun modifyTrigger(@RequestBody quartzTrigger: QuartzJobInfo.QuartzTrigger): Result<String> {
+    fun modifyTrigger(@RequestBody quartzTrigger: QuartzTrigger): Result<String> {
         QuartzManager.modifyTrigger(quartzTrigger)
         return Result.ok("操作成功")
     }
