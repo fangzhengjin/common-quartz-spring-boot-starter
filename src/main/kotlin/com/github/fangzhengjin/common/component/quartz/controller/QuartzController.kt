@@ -18,6 +18,16 @@ import java.util.*
 @RestController
 @RequestMapping("\${customize.common.quartz.baseUrl:/task}")
 class QuartzController {
+
+    @ApiOperation("任务详情")
+    @GetMapping("/{jobGroupName}/{jobName}")
+    fun jobInfo(
+        @PathVariable("jobName") jobName: String,
+        @PathVariable("jobGroupName") jobGroupName: String
+    ): Result<QuartzJobInfo> {
+        return Result.ok(QuartzManager.getJobInfo(jobName, jobGroupName))
+    }
+
     @ApiOperation("任务列表")
     @GetMapping("/list")
     fun taskList(): Result<ArrayList<QuartzJobInfo>> {
