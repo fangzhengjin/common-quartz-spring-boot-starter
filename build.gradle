@@ -13,11 +13,12 @@ buildScan {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply from: "version.gradle"
 apply from: "binary.gradle"
 apply from: "jacoco.gradle"
 
 group "com.github.fangzhengjin"
-version VERSION_NAME
+version getVersionCode()
 sourceCompatibility = '1.8'
 
 bootJar.enabled = false

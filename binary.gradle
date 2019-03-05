@@ -2,10 +2,9 @@
 //还需要pom和javadoc，source，否则是通不过jcenter审核的。
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'java'
 
 group = GROUP
-version = VERSION_NAME
+version = getVersionCode()
 
 def getBintrayUserProperty() {
     return hasProperty('BINTRAY_USER') ? BINTRAY_USER : ""
@@ -32,11 +31,13 @@ publishing {
             //GAV配置
             groupId GROUP
             artifactId ARTIFACT_ID
-            version VERSION_NAME
+            version getVersionCode()
 
             from components.java
-            artifact sourceJar
-            artifact javadocJar
+            afterEvaluate {
+                artifact sourceJar
+                artifact javadocJar
+            }
 
             //pom相关信息
             pom {
@@ -101,7 +102,7 @@ bintray {
         githubReleaseNotesFile = 'README.md' //Optional Github readme file
         version {
             //版本号
-            name = VERSION_NAME
+            name = getVersionCode()
             //版本描述
             desc = POM_DESCRIPTION
             mavenCentralSync {
