@@ -74,6 +74,8 @@ customize:
       enableController: true
       #是否使用内置异常处理器处理QuartzManagerException异常
       cacheQuartzManagerException: true
+      #任务执行器扫描路径，如不配置则默认扫描@SpringBootApplication修饰的启动类下的子包
+      scanExecJobPackages: youBasePackage
 ```
 因组件使用reflections进行包扫描，启动过程中会出现大量reflections警告，如需屏蔽警告请添加以下配置项
 ```yaml
