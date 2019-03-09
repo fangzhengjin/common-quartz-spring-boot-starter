@@ -26,7 +26,7 @@ import java.util.*
  * @param triggerDescription    触发器描述
  */
 @ApiModel("Quartz定时任务触发器")
-class QuartzTrigger @JvmOverloads constructor(
+data class QuartzTrigger @JvmOverloads constructor(
     @field:[
     ApiModelProperty("触发器名", required = true)
     ]

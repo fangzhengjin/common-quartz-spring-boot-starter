@@ -19,7 +19,7 @@ import javax.validation.constraints.NotBlank
  * @param jobDataMap            任务参数
  */
 @ApiModel("Quartz定时任务")
-class QuartzJobInfo @JvmOverloads constructor(
+data class QuartzJobInfo @JvmOverloads constructor(
     @field:[
     ApiModelProperty("任务名", required = true)
     NotBlank(message = "任务名称不能为空")
@@ -78,7 +78,6 @@ class QuartzJobInfo @JvmOverloads constructor(
         clazz as Class<out Job>
     }
 
-    @JvmOverloads
     constructor(
         jobName: String,
         jobGroupName: String,
