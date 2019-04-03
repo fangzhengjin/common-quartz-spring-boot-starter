@@ -3,7 +3,6 @@ ext {
     alreadyGenerated = false
 }
 
-
 def getVersionCode() {
     def versionFile = file('version.properties')
     if (versionFile.canRead()) {

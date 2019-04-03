@@ -1,7 +1,7 @@
 package com.github.fangzhengjin.common.component.quartz.interceptor
 
 import com.github.fangzhengjin.common.component.quartz.exception.QuartzManagerException
-import com.github.fangzhengjin.common.core.entity.Result
+import com.github.fangzhengjin.common.core.entity.HttpResult
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.HttpHeaders
@@ -35,11 +35,11 @@ class QuartzManagerExceptionHandler {
     fun handleQuartzManagerException(
         e: QuartzManagerException,
         request: HttpServletRequest
-    ): ResponseEntity<Result<String>> {
+    ): ResponseEntity<HttpResult<String>> {
         logger.error("QuartzManagerException message: ${e.message}", e)
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON_UTF8
-        val responseContext = Result.fail<String>(code = HttpStatus.INTERNAL_SERVER_ERROR.value(), message = e.message)
+        val responseContext = HttpResult.fail<String>(code = HttpStatus.INTERNAL_SERVER_ERROR.value(), message = e.message)
         return ResponseEntity(responseContext, headers, HttpStatus.OK)
     }
 }
