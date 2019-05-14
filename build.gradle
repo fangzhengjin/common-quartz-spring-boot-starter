@@ -13,12 +13,13 @@ buildScan {
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply from: "version.gradle"
-apply from: "binary.gradle"
+apply from: "maven.gradle"
+apply from: "travis.gradle"
+apply from: "bintray.gradle"
 apply from: "jacoco.gradle"
 
 group "com.github.fangzhengjin"
-version getVersionCode()
+version VERSION_CODE
 sourceCompatibility = '1.8'
 
 bootJar.enabled = false
@@ -28,6 +29,7 @@ repositories {
     mavenLocal()
     maven { url "https://maven.aliyun.com/repository/public/" }
     mavenCentral()
+    maven { url "https://dl.bintray.com/fangzhengjin/maven/" }
 }
 
 dependencies {
