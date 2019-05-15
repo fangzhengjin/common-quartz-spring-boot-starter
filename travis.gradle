@@ -31,7 +31,7 @@ task writeDescriptor {
     root.files = []
     root.files.add([
             'includePattern': 'build/libs/(.*\\.(jar|pom))',
-            'uploadPattern' : "$packageDir/$VERSION_NAME/\$1",
+            'uploadPattern' : "$packageDir/$VERSION_CODE/\$1",
             'matrixParams'  : [
                     'override': 1
             ]
