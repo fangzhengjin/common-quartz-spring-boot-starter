@@ -1,6 +1,6 @@
 import groovy.json.JsonBuilder
 
-def packageDir = "${group.replace('.', '/')}/${project.name}"
+def packageDir = "${GROUP.replace('.', '/')}/${ARTIFACT_ID}"
 
 task writeDescriptor {
     def builder = new JsonBuilder()
@@ -30,14 +30,11 @@ task writeDescriptor {
     }
     root.files = []
     root.files.add([
-            'includePattern': 'build/libs/(.*\\.jar)',
-            'uploadPattern' : "$packageDir/$VERSION_CODE/\$1",
-            'matrixParams'  : ['override': 1]
-    ])
-    root.files.add([
-            'includePattern': 'build/libs/(.*\\.pom)',
-            'uploadPattern' : "$packageDir/$VERSION_CODE/\$1",
-            'matrixParams'  : ['override': 1]
+            'includePattern': 'build/libs/(.*\\.(jar|pom))',
+            'uploadPattern' : "$packageDir/$VERSION_NAME/\$1",
+            'matrixParams'  : [
+                    'override': 1
+            ]
     ])
 
     def jsonFile = new File("$buildDir/descriptor.json")
