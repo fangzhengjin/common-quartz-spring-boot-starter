@@ -2,18 +2,10 @@
 //还需要pom和javadoc，source，否则是通不过jcenter审核的。
 apply plugin: 'com.jfrog.bintray'
 
-def getBintrayUserProperty() {
-    return hasProperty('BINTRAY_USER') ? BINTRAY_USER : ""
-}
-
-def getBintrayApiKeyProperty() {
-    return hasProperty('BINTRAY_APIKEY') ? BINTRAY_APIKEY : ""
-}
-
 // gradle bintrayUpload
 bintray {
-    user = getBintrayUserProperty()
-    key = getBintrayApiKeyProperty()
+    user = bintrayUser
+    key = ""
     publications = ['mavenJava']
 //    configurations = ['archives']
     dryRun = false
@@ -22,33 +14,28 @@ bintray {
         //你在bintray建立的仓库类型
         repo = 'maven'
         //包名
-        name = ARTIFACT_ID
+        name = artifactId
         //描述
-        desc = POM_DESCRIPTION
+        desc = pomDescription
         //站点地址
-        websiteUrl = POM_URL
+        websiteUrl = repoUrl
         //缺陷提交地址
-        issueTrackerUrl = ISSUE_URL
+        issueTrackerUrl = issueUrl
         //版本库地址
-        vcsUrl = GIT_URL
+        vcsUrl = gitUrl
         //许可证
-        licenses = [POM_LICENCE_NAME]
+        licenses = [pomLicenceName]
 //        labels = ['gradle', 'core']
         publicDownloadNumbers = true
         //Github仓库相对地址
-        githubRepo = GITHUB_REPO
+        githubRepo = githubRepo
         //版本历程文件
         githubReleaseNotesFile = 'README.md' //Optional Github readme file
         version {
             //版本号
-            name = VERSION_CODE
+            name = versionCode
             //版本描述
-            desc = POM_DESCRIPTION
-//            mavenCentralSync {
-//                sync = true
-//                user = MAVEN_USER
-//                password = MAVEN_PWD
-//            }
+            desc = pomDescription
         }
     }
 }
