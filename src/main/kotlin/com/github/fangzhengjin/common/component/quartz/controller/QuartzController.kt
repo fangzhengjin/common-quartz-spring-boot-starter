@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Api(tags = ["定时任务"])
@@ -36,9 +37,9 @@ class QuartzController {
     }
 
     @ApiOperation("任务执行器列表")
-    @GetMapping("/jobExec/list")
-    fun jobExecList(): HttpResult<HashMap<String, String>> {
-        return HttpResult.ok(QuartzManager.jobExecList())
+    @PostMapping("/jobExec/list")
+    fun jobExecList(@RequestBody scanExecJobPackages: List<String> = ArrayList()): HttpResult<HashMap<String, String>> {
+        return HttpResult.ok(QuartzManager.jobExecList(*scanExecJobPackages.toTypedArray()))
     }
 
     @ApiOperation("添加任务")
