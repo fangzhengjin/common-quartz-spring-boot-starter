@@ -12,8 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  */
 @ConfigurationProperties("customize.common.quartz")
 class QuartzManagerProperties {
-    var cacheQuartzManagerException: Boolean = true
+    var catchQuartzManagerException: Boolean = true
     var enableController: Boolean = true
+    var showInSwagger: Boolean = false
     var baseUrl: String = "/task"
     var scanExecJobPackages: String = "com.github.fangzhengjin"
 }

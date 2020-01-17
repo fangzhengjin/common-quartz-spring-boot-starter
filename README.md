@@ -72,8 +72,10 @@ customize:
       baseUrl: /task
       #是否开启内置Controller
       enableController: true
+      #是否在Swagger中展示QuartzControllerApi
+      showInSwagger: false
       #是否使用内置异常处理器处理QuartzManagerException异常
-      cacheQuartzManagerException: true
+      catchQuartzManagerException: true
       #任务执行器扫描路径，如不配置则默认扫描@SpringBootApplication修饰的启动类下的子包
       scanExecJobPackages: youBasePackage
 ```

@@ -22,9 +22,9 @@
       "defaultValue": "/task"
     },
     {
-      "name": "customize.common.quartz.cacheQuartzManagerException",
+      "name": "customize.common.quartz.catchQuartzManagerException",
       "type": "java.lang.Boolean",
-      "description": "cacheQuartzManagerException",
+      "description": "catchQuartzManagerException",
       "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
       "defaultValue": true
     },
@@ -33,6 +33,13 @@
       "type": "java.lang.String",
       "description": "scanExecJobPackages",
       "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties"
+    },
+    {
+      "name": "customize.common.quartz.showInSwagger",
+      "type": "java.lang.Boolean",
+      "description": "showInSwagger",
+      "sourceType": "com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerProperties",
+      "defaultValue": false
     }
   ]
 }

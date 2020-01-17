@@ -63,7 +63,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-quartz")
     api("org.reflections:reflections:$reflectionsVersion")
-    api("com.github.fangzhengjin:common-core:0.0.5")
+    api("com.github.fangzhengjin:common-core:0.0.8")
     //fastjson
 //    implementation "com.alibaba:fastjson:${fastJsonVersion}"
     //Swagger2

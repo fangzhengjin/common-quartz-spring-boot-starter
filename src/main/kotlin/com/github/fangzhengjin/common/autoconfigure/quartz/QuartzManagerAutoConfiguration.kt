@@ -7,12 +7,16 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
 import org.springframework.util.StringUtils
+import springfox.documentation.builders.RequestHandlerSelectors
+import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spring.web.plugins.Docket
 
 /**
  * 当项目使用Quartz时，如果Spring容器中不存在QuartzManager则自动创建
@@ -27,6 +31,9 @@ class QuartzManagerAutoConfiguration {
         private val logger = LoggerFactory.getLogger(this::class.java)
     }
 
+    /**
+     * 注册QuartzManager
+     */
     @Bean
     @ConditionalOnClass(QuartzJobInfo::class)
     @ConditionalOnMissingBean(QuartzManager::class)
@@ -48,5 +55,22 @@ class QuartzManagerAutoConfiguration {
         }
         logger.info("QuartzManager jobExec scanBasePackage: ${quartzManagerProperties.scanExecJobPackages}")
         return QuartzManager.init(schedulerFactory, quartzManagerProperties)
+    }
+
+    /**
+     * 注册SwaggerApi
+     */
+    @Bean
+    @ConditionalOnClass(Docket::class)
+    @ConditionalOnProperty(value = ["customize.common.quartz.showInSwagger"], matchIfMissing = false)
+    fun swaggerQuartzApi(): Docket {
+        return Docket(DocumentationType.SWAGGER_2)
+                .groupName("quartz")
+                .useDefaultResponseMessages(false)
+                .forCodeGeneration(true)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.github.fangzhengjin.common.component.quartz.controller"))
+                .apis(RequestHandlerSelectors.any())
+                .build()
     }
 }

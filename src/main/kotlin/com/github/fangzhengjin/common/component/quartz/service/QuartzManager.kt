@@ -70,12 +70,16 @@ object QuartzManager {
      * 扫描可使用的任务执行器
      */
     @JvmStatic
-    fun jobExecList(): HashMap<String, String> {
+    fun jobExecList(vararg scanExecJobPackages: String): HashMap<String, String> {
+        // 未传递扫描包时优先使用配置文件值
+        val scanPackages = if (scanExecJobPackages.isEmpty()) {
+            quartzManagerProperties.scanExecJobPackages.split(",")
+        } else {
+            scanExecJobPackages.toList()
+        }
         try {
             val jobDesc = hashMapOf<String, String>()
-            val subTypes =
-                Reflections(quartzManagerProperties.scanExecJobPackages.split(","))
-                    .getTypesAnnotatedWith(QuartzJobDescription::class.java)
+            val subTypes = Reflections(scanPackages).getTypesAnnotatedWith(QuartzJobDescription::class.java)
             subTypes.forEach {
                 it.annotations.forEach { annotation ->
                     if (annotation is QuartzJobDescription) {
@@ -107,12 +111,12 @@ object QuartzManager {
     fun getJobInfo(jobKey: JobKey): QuartzJobInfo {
         val jobDetail = scheduler.getJobDetail(jobKey)
         return QuartzJobInfo(
-            jobName = jobKey.name,
-            jobGroupName = jobKey.group,
-            jobClassName = jobDetail.jobClass.name,
-            jobDescription = jobDetail.description,
-            jobDataMap = jobDetail.jobDataMap
-            //                        triggers = QuartzJobInfo.QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
+                jobName = jobKey.name,
+                jobGroupName = jobKey.group,
+                jobClassName = jobDetail.jobClass.name,
+                jobDescription = jobDetail.description,
+                jobDataMap = jobDetail.jobDataMap
+                //                        triggers = QuartzJobInfo.QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
         ).also {
             it.triggers = QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
         }
@@ -187,17 +191,17 @@ object QuartzManager {
         try {
             checkExists(quartzJobInfo.jobKey, true)
             val existsList =
-                quartzJobInfo.triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
-                    .map { it.key.toString() }
-                    .toMutableList()
+                    quartzJobInfo.triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
+                            .map { it.key.toString() }
+                            .toMutableList()
             if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
             val jobDetail = scheduler.getJobDetail(quartzJobInfo.jobKey)
             val oldTriggers = scheduler.getTriggersOfJob(quartzJobInfo.jobKey).toMutableList()
             if (oldTriggers.isNotEmpty()) {
                 quartzJobInfo.triggers.addAll(
-                    QuartzTrigger.transformToQuartzTriggerAndFlushStatus(
-                        oldTriggers
-                    )
+                        QuartzTrigger.transformToQuartzTriggerAndFlushStatus(
+                                oldTriggers
+                        )
                 )
             }
             // 添加并替换历史触发器
@@ -217,9 +221,9 @@ object QuartzManager {
         try {
             checkExists(jobKey, true)
             val existsList =
-                triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
-                    .map { it.key.toString() }
-                    .toMutableList()
+                    triggers.filter { checkExists(it.key, mustBeExists = false, throwException = false) }
+                            .map { it.key.toString() }
+                            .toMutableList()
             if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
             val jobDetail = scheduler.getJobDetail(jobKey)
             val oldTriggers = scheduler.getTriggersOfJob(jobKey).toMutableList()

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest
  * @author fangzhengjin
  * @date 2019/1/30 17:19
  */
-@ConditionalOnProperty(value = ["customize.common.quartz.cacheQuartzManagerException"], matchIfMissing = true)
+@ConditionalOnProperty(value = ["customize.common.quartz.catchQuartzManagerException"], matchIfMissing = true)
 @RestControllerAdvice("com.github.fangzhengjin.common.component.quartz")
 class QuartzManagerExceptionHandler {
     private companion object {
