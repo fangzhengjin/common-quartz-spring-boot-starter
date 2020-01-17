@@ -1,3 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerAutoConfiguration
+com.github.fangzhengjin.common.autoconfigure.quartz.QuartzManagerAutoConfiguration,\
+com.github.fangzhengjin.common.autoconfigure.quartz.SwaggerQuartzApiAutoConfiguration
