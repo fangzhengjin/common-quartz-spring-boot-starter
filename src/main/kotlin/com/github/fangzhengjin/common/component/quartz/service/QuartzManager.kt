@@ -109,7 +109,7 @@ object QuartzManager {
      */
     @JvmStatic
     fun getJobInfo(jobKey: JobKey): QuartzJobInfo {
-        val jobDetail = scheduler.getJobDetail(jobKey)
+        val jobDetail = scheduler.getJobDetail(jobKey) ?: throw RuntimeException("任务信息[${jobKey.group}-${jobKey.name}]未找到")
         return QuartzJobInfo(
                 jobName = jobKey.name,
                 jobGroupName = jobKey.group,
@@ -196,6 +196,7 @@ object QuartzManager {
                             .toMutableList()
             if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
             val jobDetail = scheduler.getJobDetail(quartzJobInfo.jobKey)
+                    ?: throw RuntimeException("任务信息[${quartzJobInfo.jobKey.group}-${quartzJobInfo.jobKey.name}]未找到")
             val oldTriggers = scheduler.getTriggersOfJob(quartzJobInfo.jobKey).toMutableList()
             if (oldTriggers.isNotEmpty()) {
                 quartzJobInfo.triggers.addAll(
@@ -226,6 +227,7 @@ object QuartzManager {
                             .toMutableList()
             if (existsList.isNotEmpty()) throw RuntimeException("触发器【${existsList.joinToString()}】已存在")
             val jobDetail = scheduler.getJobDetail(jobKey)
+                    ?: throw RuntimeException("任务信息[${jobKey.group}-${jobKey.name}]未找到")
             val oldTriggers = scheduler.getTriggersOfJob(jobKey).toMutableList()
             val newTriggers = mutableListOf<QuartzTrigger>()
             if (oldTriggers.isNotEmpty()) {

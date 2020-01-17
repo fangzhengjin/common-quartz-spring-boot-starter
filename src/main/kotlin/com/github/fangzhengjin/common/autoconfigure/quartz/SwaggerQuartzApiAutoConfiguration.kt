@@ -19,7 +19,7 @@ class SwaggerQuartzApiAutoConfiguration {
     @ConditionalOnProperty(value = ["customize.common.quartz.showInSwagger"], matchIfMissing = false)
     fun swaggerQuartzApi(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(ApiInfoBuilder().title("QuartzApi").version("0.0.6").build())
+                .apiInfo(ApiInfoBuilder().title("QuartzApi").version("0.0.7").build())
                 .groupName("quartz")
                 .useDefaultResponseMessages(false)
                 .forCodeGeneration(true)
