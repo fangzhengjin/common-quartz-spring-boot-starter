@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation
 import org.quartz.JobKey
 import org.quartz.TriggerKey
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -16,7 +17,7 @@ import java.util.*
 @Api(tags = ["定时任务"])
 @ConditionalOnProperty(value = ["customize.common.quartz.enableController"], matchIfMissing = true)
 @RestController
-@RequestMapping("\${customize.common.quartz.baseUrl:/task}")
+@RequestMapping(value = ["\${customize.common.quartz.baseUrl:/task}"], produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
 class QuartzController {
 
     @ApiOperation("任务详情")
