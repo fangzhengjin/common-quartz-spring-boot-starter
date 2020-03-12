@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty
 import org.quartz.CronTrigger
 import org.quartz.Job
 import org.quartz.JobKey
+import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 /**
@@ -19,35 +20,13 @@ import javax.validation.constraints.NotBlank
  * @param jobDataMap            任务参数
  */
 @ApiModel("Quartz定时任务")
-data class QuartzJobInfo @JvmOverloads constructor(
-    @field:[
-    ApiModelProperty("任务名", required = true)
-    NotBlank(message = "任务名称不能为空")
-    ]
-    var jobName: String,
-    @field:[
-    ApiModelProperty("任务组名", required = true)
-    NotBlank(message = "任务组名称不能为空")
-    ]
-    var jobGroupName: String,
-    @field:[
-    ApiModelProperty("任务执行器", required = true)
-    NotBlank(message = "任务执行器不能为空")
-    ]
-    var jobClassName: String,
-    var jobDescription: String? = null,
-    var jobDataMap: Map<String, Any>? = hashMapOf(),
-    @field:[
-    ApiModelProperty(name = "触发器")
-    ]
-    var triggers: MutableList<QuartzTrigger> = mutableListOf()
-) {
+class QuartzJobInfo {
 
     companion object {
         @JvmStatic
         fun jobExecCheck(jobClass: Class<*>) {
             if (!(jobClass.interfaces.contains(Job::class.java) && jobClass.isAnnotationPresent(QuartzJobDescription::class.java))) throw QuartzManagerException(
-                "所选执行器不是标准的执行器"
+                    "所选执行器不是标准的执行器"
             )
         }
 
@@ -58,36 +37,43 @@ data class QuartzJobInfo @JvmOverloads constructor(
         }
     }
 
+    @ApiModelProperty("任务名", required = true)
+    @NotBlank(message = "任务名称不能为空")
+    var jobName: String? = null
+
+    @ApiModelProperty("任务组名", required = true)
+    @NotBlank(message = "任务组名称不能为空")
+    var jobGroupName: String? = null
+
+    @ApiModelProperty("任务执行器", required = true)
+    @NotBlank(message = "任务执行器不能为空")
+    var jobClassName: String? = null
+        set(value) {
+            if (value != null) {
+                jobExecCheck(value)
+            }
+            field = value
+        }
+    var jobDescription: String? = null
+    var jobDataMap: Map<String, Any> = hashMapOf()
+
+    @ApiModelProperty(name = "触发器")
+    @Valid
+    var triggers: MutableList<QuartzTrigger> = mutableListOf()
+
     /**
      * 任务执行
      */
-    @get:[
-    ApiModelProperty(
-        name = "任务执行实体类",
-        hidden = true,
-        readOnly = true,
-        accessMode = ApiModelProperty.AccessMode.READ_ONLY
-    )
-    JSONField(serialize = false)
-    JsonIgnore
-    ]
-    val jobClass: Class<out Job> by lazy {
-        val clazz = Class.forName(jobClassName)
-        jobExecCheck(clazz)
-        @Suppress("UNCHECKED_CAST")
-        clazz as Class<out Job>
-    }
-
-    constructor(
-        jobName: String,
-        jobGroupName: String,
-        jobClass: Class<out Job>,
-        jobDescription: String? = null,
-        jobDataMap: Map<String, Any>? = hashMapOf(),
-        triggers: MutableList<QuartzTrigger> = mutableListOf()
-    ) : this(jobName, jobGroupName, jobClass.name, jobDescription, jobDataMap, triggers) {
-        jobExecCheck(jobClass)
-    }
+    val jobClass: Class<out Job>
+        @ApiModelProperty(name = "任务执行实体类", hidden = true, readOnly = true, accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+        @JSONField(serialize = false)
+        @JsonIgnore
+        get() {
+            val clazz = Class.forName(jobClassName)
+//            jobExecCheck(clazz)
+            @Suppress("UNCHECKED_CAST")
+            return clazz as Class<out Job>
+        }
 
     val jobKey: JobKey
         @ApiModelProperty(hidden = true)

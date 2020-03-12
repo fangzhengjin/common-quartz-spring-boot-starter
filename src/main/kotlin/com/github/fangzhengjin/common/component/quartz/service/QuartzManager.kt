@@ -23,10 +23,13 @@ object QuartzManager {
      */
     @JvmStatic
     private val logger = LoggerFactory.getLogger(this::class.java)
+
     @JvmStatic
     private lateinit var schedulerFactory: SchedulerFactoryBean
+
     @JvmStatic
     private lateinit var quartzManagerProperties: QuartzManagerProperties
+
     @JvmStatic
     private lateinit var scheduler: Scheduler
 
@@ -110,14 +113,12 @@ object QuartzManager {
     @JvmStatic
     fun getJobInfo(jobKey: JobKey): QuartzJobInfo {
         val jobDetail = scheduler.getJobDetail(jobKey) ?: throw RuntimeException("任务【${jobKey}】未找到")
-        return QuartzJobInfo(
-                jobName = jobKey.name,
-                jobGroupName = jobKey.group,
-                jobClassName = jobDetail.jobClass.name,
-                jobDescription = jobDetail.description,
-                jobDataMap = jobDetail.jobDataMap
-                //                        triggers = QuartzJobInfo.QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
-        ).also {
+        return QuartzJobInfo().also {
+            it.jobName = jobKey.name
+            it.jobGroupName = jobKey.group
+            it.jobClassName = jobDetail.jobClass.name
+            it.jobDescription = jobDetail.description
+            it.jobDataMap = jobDetail.jobDataMap
             it.triggers = QuartzTrigger.getJobTriggersAndFlushStatus(jobKey, scheduler)
         }
     }

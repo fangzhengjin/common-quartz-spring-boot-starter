@@ -16,26 +16,30 @@ import org.springframework.util.Assert
 @RunWith(SpringRunner::class)
 class QuartzManagerTest {
 
-    private val quartzJobInfo = QuartzJobInfo(
-        "jobName",
-        "jobGroupName",
-        TestJob::class.java,
-        "jobDescription",
-        hashMapOf(),
-        mutableListOf(
-            QuartzTrigger(
-                "triggerName",
-                "triggerGroupName",
-                "0 0/30 * * * ?"
-            )
-        )
-    )
+    private val quartzJobInfo by lazy {
+        val quartzJobInfoTemp = QuartzJobInfo()
+        quartzJobInfoTemp.jobName = "jobName"
+        quartzJobInfoTemp.jobGroupName = "jobGroupName"
+        quartzJobInfoTemp.jobClassName = TestJob::class.java.name
+        quartzJobInfoTemp.jobDescription = "jobDescription"
+        quartzJobInfoTemp.jobDataMap = hashMapOf()
 
-    private val quartzTrigger = QuartzTrigger(
-        "triggerName2",
-        "triggerGroupName2",
-        "0 0/30 * * * ?"
-    )
+        val quartzTriggerTemp = QuartzTrigger()
+        quartzTriggerTemp.triggerName = "triggerName"
+        quartzTriggerTemp.triggerGroupName = "triggerGroupName"
+        quartzTriggerTemp.cronExpression = "0 0/30 * * * ?"
+
+        quartzJobInfoTemp.triggers = mutableListOf(quartzTriggerTemp)
+        quartzJobInfoTemp
+    }
+
+    private val quartzTrigger by lazy {
+        val quartzTriggerTemp = QuartzTrigger()
+        quartzTriggerTemp.triggerName = "triggerName2"
+        quartzTriggerTemp.triggerGroupName = "triggerGroupName2"
+        quartzTriggerTemp.cronExpression = "0 0/30 * * * ?"
+        quartzTriggerTemp
+    }
 
     @Test
     fun quartzManagerTest() {
@@ -56,43 +60,43 @@ class QuartzManagerTest {
         QuartzManager.pause(quartzJobInfo.jobKey)
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
-            2
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
+                2
         )
 
         QuartzManager.resume(quartzJobInfo.jobKey)
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
-            2
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
+                2
         )
 
         QuartzManager.pause(quartzTrigger.key)
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
-            1
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
+                1
         )
 
         QuartzManager.resume(quartzTrigger.key)
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
-            2
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
+                2
         )
 
         QuartzManager.pauseAll()
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
-            2
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.PAUSED }.size,
+                2
         )
 
         QuartzManager.resumeAll()
         jobInfo = QuartzManager.getJobInfo(quartzJobInfo.jobKey)
         org.junit.Assert.assertEquals(
-            jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
-            2
+                jobInfo.triggers.filter { it.triggerState == Trigger.TriggerState.NORMAL }.size,
+                2
         )
         QuartzManager.removeAll()
     }

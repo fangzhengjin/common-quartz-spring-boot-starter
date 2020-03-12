@@ -9,6 +9,7 @@ import org.quartz.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.util.StringUtils
 import java.util.*
+import javax.validation.constraints.NotBlank
 
 /**
  * @version V1.0
@@ -26,36 +27,24 @@ import java.util.*
  * @param triggerDescription    触发器描述
  */
 @ApiModel("Quartz定时任务触发器")
-data class QuartzTrigger @JvmOverloads constructor(
-    @field:[
-    ApiModelProperty("触发器名", required = true)
-    ]
-    var triggerName: String,
-    @field:[
-    ApiModelProperty("触发器组名", required = true)
-    ]
-    var triggerGroupName: String,
-    @field:[
-    ApiModelProperty("cron时间设置，参考quartz说明文档", required = true)
-    ]
-    var cronExpression: String,
-    @field:[
-    ApiModelProperty("触发器描述")
-    ]
-    var triggerDescription: String? = null
-//            var triggerDataMap: Map<String, Any> = hashMapOf()
-) {
+class QuartzTrigger {
+
     companion object {
         @JvmStatic
         fun transformToQuartzTrigger(trigger: CronTrigger): QuartzTrigger {
-            return QuartzTrigger(trigger.key.name, trigger.key.group, trigger.cronExpression, trigger.description)
+            val quartzTrigger = QuartzTrigger()
+            quartzTrigger.triggerName = trigger.key.name
+            quartzTrigger.triggerGroupName = trigger.key.group
+            quartzTrigger.cronExpression = trigger.cronExpression
+            quartzTrigger.triggerDescription = trigger.description
+            return quartzTrigger
         }
 
         @JvmStatic
         @JvmOverloads
         fun transformToQuartzTriggerAndFlushStatus(
-            triggers: MutableList<Trigger>,
-            scheduler: Scheduler? = null
+                triggers: MutableList<Trigger>,
+                scheduler: Scheduler? = null
         ): MutableList<QuartzTrigger> {
             val quartzTriggers: MutableList<QuartzTrigger> = mutableListOf()
             for (trigger in triggers) {
@@ -83,6 +72,21 @@ data class QuartzTrigger @JvmOverloads constructor(
             return quartzTriggers
         }
     }
+
+    @ApiModelProperty("触发器名", required = true)
+    @NotBlank(message = "任务触发器名称不能为空")
+    var triggerName: String? = null
+
+    @ApiModelProperty("触发器组名", required = true)
+    @NotBlank(message = "任务触发器组名不能为空")
+    var triggerGroupName: String? = null
+
+    @ApiModelProperty("cron时间设置，参考quartz说明文档", required = true)
+    @NotBlank(message = "任务执行时间不能为空")
+    var cronExpression: String? = null
+
+    @ApiModelProperty("触发器描述")
+    var triggerDescription: String? = null
 
     val trigger: Trigger
         @ApiModelProperty(hidden = true)
@@ -135,10 +139,6 @@ data class QuartzTrigger @JvmOverloads constructor(
             }
         }
 
-//        /**
-//         * 上一次执行时间
-//         */
-//        var previousExecTime: Date? = null
     /**
      * 下一次执行时间
      */
@@ -152,6 +152,6 @@ data class QuartzTrigger @JvmOverloads constructor(
 
     fun refreshStatus(scheduler: Scheduler): QuartzTrigger {
         triggerState = scheduler.getTriggerState(key)
-        return this@QuartzTrigger
+        return this
     }
 }

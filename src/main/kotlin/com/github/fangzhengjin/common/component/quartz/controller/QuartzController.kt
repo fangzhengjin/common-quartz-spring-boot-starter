@@ -10,6 +10,7 @@ import org.quartz.JobKey
 import org.quartz.TriggerKey
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.MediaType
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -24,8 +25,8 @@ class QuartzController {
     @ApiOperation("任务详情")
     @GetMapping("/{jobGroupName}/{jobName}")
     fun jobInfo(
-        @PathVariable("jobName") jobName: String,
-        @PathVariable("jobGroupName") jobGroupName: String
+            @PathVariable("jobName") jobName: String,
+            @PathVariable("jobGroupName") jobGroupName: String
     ): HttpResult<QuartzJobInfo> {
         return HttpResult.ok(QuartzManager.getJobInfo(jobName, jobGroupName))
     }
@@ -44,7 +45,7 @@ class QuartzController {
 
     @ApiOperation("添加任务")
     @PostMapping("/add")
-    fun add(@RequestBody quartzJobInfo: QuartzJobInfo): HttpResult<String> {
+    fun add(@Validated @RequestBody quartzJobInfo: QuartzJobInfo): HttpResult<String> {
         QuartzManager.addJob(quartzJobInfo)
         return HttpResult.ok("操作成功")
     }
@@ -86,7 +87,7 @@ class QuartzController {
 
     @ApiOperation("新增触发器")
     @PostMapping("/trigger/add")
-    fun addTrigger(@RequestBody quartzJobInfo: QuartzJobInfo): HttpResult<String> {
+    fun addTrigger(@Validated @RequestBody quartzJobInfo: QuartzJobInfo): HttpResult<String> {
         QuartzManager.addTrigger(quartzJobInfo)
         return HttpResult.ok("操作成功")
     }
@@ -100,7 +101,7 @@ class QuartzController {
 
     @ApiOperation("修改触发器")
     @PostMapping("/trigger/modify")
-    fun modifyTrigger(@RequestBody quartzTrigger: QuartzTrigger): HttpResult<String> {
+    fun modifyTrigger(@Validated @RequestBody quartzTrigger: QuartzTrigger): HttpResult<String> {
         QuartzManager.modifyTrigger(quartzTrigger)
         return HttpResult.ok("操作成功")
     }
