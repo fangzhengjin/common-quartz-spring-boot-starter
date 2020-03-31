@@ -1,12 +1,9 @@
 package com.github.fangzhengjin.common.component.quartz.vo
 
-import com.alibaba.fastjson.annotation.JSONField
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import org.quartz.*
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.util.StringUtils
 import java.util.*
 
@@ -86,7 +83,6 @@ data class QuartzTrigger @JvmOverloads constructor(
 
     val trigger: Trigger
         @ApiModelProperty(hidden = true)
-        @JSONField(serialize = false)
         @JsonIgnore
         get() {
             // 触发器
@@ -111,7 +107,6 @@ data class QuartzTrigger @JvmOverloads constructor(
 
     val key: TriggerKey
         @ApiModelProperty(hidden = true)
-        @JSONField(serialize = false)
         @JsonIgnore
         get() = TriggerKey.triggerKey(triggerName, triggerGroupName)
 
@@ -144,9 +139,6 @@ data class QuartzTrigger @JvmOverloads constructor(
      */
     val nextExecTime: Date
         @ApiModelProperty(name = "下一次执行时间", readOnly = true, accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-        @JSONField(name = "nextExecTime", format = "yyyy-MM-dd HH:mm:ss")
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         get() = CronExpression(cronExpression).getTimeAfter(Date())
 
 

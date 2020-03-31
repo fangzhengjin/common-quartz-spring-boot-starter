@@ -59,13 +59,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.springframework.boot:spring-boot-starter-web")
-    testCompile("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-quartz")
     api("org.reflections:reflections:$reflectionsVersion")
-    api("com.github.fangzhengjin:common-core:0.0.8")
-    //fastjson
-//    implementation "com.alibaba:fastjson:${fastJsonVersion}"
+    api("com.github.fangzhengjin:common-core:0.0.9")
     //Swagger2
     compileOnly("io.springfox:springfox-swagger2:$swaggerVersion")
     compileOnly("io.springfox:springfox-swagger-ui:$swaggerVersion")

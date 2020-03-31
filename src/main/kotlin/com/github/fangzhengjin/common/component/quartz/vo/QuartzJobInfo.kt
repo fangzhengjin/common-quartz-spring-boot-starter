@@ -1,6 +1,5 @@
 package com.github.fangzhengjin.common.component.quartz.vo
 
-import com.alibaba.fastjson.annotation.JSONField
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.fangzhengjin.common.component.quartz.annotation.QuartzJobDescription
 import com.github.fangzhengjin.common.component.quartz.exception.QuartzManagerException
@@ -68,7 +67,6 @@ data class QuartzJobInfo @JvmOverloads constructor(
         readOnly = true,
         accessMode = ApiModelProperty.AccessMode.READ_ONLY
     )
-    JSONField(serialize = false)
     JsonIgnore
     ]
     val jobClass: Class<out Job> by lazy {
@@ -91,11 +89,9 @@ data class QuartzJobInfo @JvmOverloads constructor(
 
     val jobKey: JobKey
         @ApiModelProperty(hidden = true)
-        @JSONField(serialize = false)
         @JsonIgnore
         get() = JobKey.jobKey(jobName, jobGroupName)
 
-    @JSONField(serialize = false)
     @JsonIgnore
     fun getCronTriggers(): MutableList<CronTrigger> {
         return triggers.map { it.trigger as CronTrigger }.toMutableList()
